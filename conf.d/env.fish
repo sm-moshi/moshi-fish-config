@@ -1,6 +1,11 @@
 # Environment variables from Zsh configuration
 # Maintained for Fish shell
 
+# Ensure safe working directory
+if status is-login
+    cd $HOME
+end
+
 # Environment variables
 
 # Set XDG directories

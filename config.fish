@@ -1,26 +1,36 @@
 # Main Fish shell configuration file
-# Structured to mirror Zsh configuration with Fish idioms
+
+# Reset working directory if in system paths
+if string match -q "/opt/homebrew/*" "$PWD"
+    cd $HOME
+end
 
 if status is-interactive
-    # Add function subdirectories to fish_function_path
-    for dir in (dirname (status --current-filename))/functions/*/
+    set -l config_dir (dirname (status --current-filename))
+
+    # Function to safely load configuration files
+    function load_config --argument-names file
+        set -l config_path $config_dir/$file
+        if test -f $config_path
+            source $config_path
+        else
+            echo "Warning: Configuration file $file not found"
+        end
+    end
+
+    # Add function paths
+    for dir in $config_dir/functions/*/
         if test -d $dir
             set -ga fish_function_path $dir
         end
     end
 
-    # Auto-load all functions in subdirectories
-    for f in (dirname (status --current-filename))/functions/*/*.fish
-        source $f
+    # Load core configurations in order
+    set -l configs env.fish path.fish programming.fish asdf.fish plugins.fish aliases.fish
+    for conf in $configs
+        load_config conf.d/$conf
     end
 
-    # Load configuration modules
-    # These are organized similar to your Zsh setup
-    source (dirname (status --current-filename))/conf.d/env.fish
-    source (dirname (status --current-filename))/conf.d/path.fish
-    source (dirname (status --current-filename))/conf.d/programming.fish
-    source (dirname (status --current-filename))/conf.d/asdf.fish
-    source (dirname (status --current-filename))/conf.d/plugins.fish
-    source (dirname (status --current-filename))/conf.d/aliases.fish
-    # Remove tide.fish source line
+    # Cleanup
+    functions -e load_config
 end

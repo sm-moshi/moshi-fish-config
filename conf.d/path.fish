@@ -11,35 +11,27 @@
 
 # PATH configuration
 
-set -gx PATH \
-    # Language-specific tools (highest priority)
+# Define path groups
+set -l user_paths \
     $HOME/.cargo/bin \
     $HOME/.rustup/toolchains/*/bin \
-    $HOME/.asdf/bin \
-    $HOME/.asdf/shims \
-    # System paths
-    /opt/homebrew/bin \
-    /opt/homebrew/sbin \
-    # Development tools
-    /opt/homebrew/opt/llvm/bin \
-    /opt/homebrew/opt/openjdk/bin \
-    /opt/homebrew/opt/dotnet/bin \
-    /opt/homebrew/opt/bison/bin \
-    /opt/homebrew/opt/m4/bin \
-    /opt/homebrew/opt/ncurses/bin \
-    /opt/homebrew/opt/curl/bin \
-    /opt/homebrew/opt/net-snmp/bin \
-    /opt/homebrew/opt/net-snmp/sbin \
-    /opt/homebrew/opt/poppler-qt5/bin \
-    /opt/homebrew/opt/tcl-tk@8/bin \
-    /opt/homebrew/opt/coreutils/libexec/gnubin \
-    /opt/homebrew/opt/grep/libexec/gnubin \
-    /opt/homebrew/opt/gnu-sed/libexec/gnubin \
-    /opt/homebrew/opt/findutils/libexec/gnubin \
-    /opt/homebrew/opt/make/libexec/gnubin \
-    /opt/homebrew/opt/libtool/libexec/gnubin \
-    /opt/homebrew/opt/gnu-getopt/bin \
-    /opt/homebrew/opt/gawk/bin \
-    /opt/homebrew/opt/binutils/bin \
+    $HOME/.asdf/{bin,shims}
+
+set -l brew_paths \
+    $BREW_PREFIX/{bin,sbin}
+
+set -l tool_paths \
+    $BREW_PREFIX/opt/{llvm,openjdk,dotnet,bison,m4,ncurses,curl,net-snmp,poppler-qt5,"tcl-tk@8"}/bin
+
+set -l gnu_paths \
+    $BREW_PREFIX/opt/{coreutils,grep,gnu-sed,findutils,make,libtool}/libexec/gnubin \
+    $BREW_PREFIX/opt/{gnu-getopt,gawk,binutils}/bin
+
+# Combine all paths
+set -gx PATH \
+    $user_paths \
+    $brew_paths \
+    $tool_paths \
+    $gnu_paths \
     $HOME/.cache/lm-studio/bin \
     $PATH
