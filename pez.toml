@@ -1,0 +1,14 @@
+[[plugins]]
+repo = "ilancosman/tide"
+
+[[plugins]]
+repo = "patrickf1/fzf.fish"
+
+[[plugins]]
+repo = "edc/bass"
+
+[[plugins]]
+repo = "jorgebucaran/fish-bax"
+
+[[plugins]]
+repo = "patrickf1/colored_man_pages.fish"

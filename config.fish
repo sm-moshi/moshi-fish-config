@@ -1,36 +1,22 @@
-# Main Fish shell configuration file
+# ===== Main Fish Shell Configuration =====
 
-# Reset working directory if in system paths
-if string match -q "/opt/homebrew/*" "$PWD"
-    cd $HOME
-end
+# Disable greeting
+set -U fish_greeting ""
 
 if status is-interactive
-    set -l config_dir (dirname (status --current-filename))
+    # Load configurations in dependency order
+    set -l configs \
+        core.fish \
+        dev.fish \
+        path.fish \
+        tools.fish \
+        aliases.fish \
+        theme.fish
 
-    # Function to safely load configuration files
-    function load_config --argument-names file
-        set -l config_path $config_dir/$file
-        if test -f $config_path
-            source $config_path
-        else
-            echo "Warning: Configuration file $file not found"
-        end
-    end
-
-    # Add function paths
-    for dir in $config_dir/functions/*/
-        if test -d $dir
-            set -ga fish_function_path $dir
-        end
-    end
-
-    # Load core configurations in order
-    set -l configs env.fish path.fish programming.fish asdf.fish plugins.fish aliases.fish
     for conf in $configs
-        load_config conf.d/$conf
+        test -f $__fish_config_dir/conf.d/$conf; and source $__fish_config_dir/conf.d/$conf
     end
-
-    # Cleanup
-    functions -e load_config
 end
+
+# Added by Windsurf
+fish_add_path /Users/smeya/.codeium/windsurf/bin
